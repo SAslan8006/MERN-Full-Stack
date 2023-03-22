@@ -6,6 +6,7 @@ const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
     const user = await AuthSchema.findOne({ email });
+
     if (user) {
       return res.status(500).json({ msg: 'Bu email hesabı zaten bulunmaktadır..!' });
     }
@@ -15,10 +16,9 @@ const register = async (req, res) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    if (!ValidateEmail(email)) {
-      return res.status(500).json({ msg: 'Girilen değer mail değildir...!' });
+    if (!validateEmail(email)) {
+      return res.status(500).json({ msg: 'Uygun bir mail giriniz...!' });
     }
-
     const newUser = await AuthSchema.create({ username, email, password: passwordHash });
 
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
@@ -56,9 +56,9 @@ const login = async (req, res) => {
   }
 };
 
-function ValidateEmail(inputText) {
-  var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-  if (inputText.value.match(mailformat)) {
+function validateEmail(inputText) {
+  let mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  if (inputText.match(mailformat)) {
     return true;
   }
   else {
