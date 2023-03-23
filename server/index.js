@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const database = require('./config/database');
 const authRouter = require('./routes/auth.js');
+const postRouter = require('./routes/post.js');
 
 dotenv.config();
 
@@ -12,6 +13,7 @@ app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
 app.use('/',authRouter);
+app.use('/', postRouter);
 // Router Register
 
 
